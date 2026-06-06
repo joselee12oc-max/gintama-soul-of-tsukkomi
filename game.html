@@ -1,0 +1,1687 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>銀魂 Soul of Tsukkomi - 奧義暗轉修羅版</title>
+<style>
+:root {
+  --ginto-blue: #a0d8ef;
+  --shinpachi-brown: #96514d;
+  --kagura-red: #e94747;
+  --hijikata-black: #1a2624;
+  --okita-gold: #e6b800;
+  --kondo-gorilla: #8b5a2b;
+}
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #0c0c0c;
+  color: #fff;
+  font-family: 'Microsoft JhengHei', sans-serif;
+  overflow-y: auto;
+  user-select: none;
+}
+header {
+  text-align: center;
+  background: linear-gradient(135deg, #7f8c8d, #c0392b, #000);
+  color: #fff;
+  padding: 10px;
+  font-weight: bold;
+  font-size: 24px;
+  letter-spacing: 5px;
+  box-shadow: 0 4px 15px rgba(192, 41, 43, 0.8);
+  border-bottom: 5px solid #000;
+}
+.difficulty-panel {
+  background: #111;
+  padding: 10px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  border-bottom: 2px solid #333;
+}
+.diff-select {
+  padding: 6px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  background: #c0392b;
+  color: #fff;
+  border: 2px solid #fff;
+  cursor: pointer;
+  border-radius: 4px;
+}
+.guide-toggle-btn {
+  background: #f1c40f;
+  color: #000;
+  border: 2px solid #000;
+  padding: 5px 15px;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-left: 10px;
+}
+.guide-container {
+  max-width: 1000px;
+  margin: 15px auto;
+  background: #151515;
+  border: 2px dashed #c0392b;
+  border-radius: 8px;
+  padding: 20px;
+  box-sizing: border-box;
+}
+.guide-section h3 {
+  color: #f1c40f;
+  border-left: 4px solid #c0392b;
+  padding-left: 10px;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+.guide-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+  font-size: 14px;
+}
+.guide-table th, .guide-table td {
+  border: 1px solid #333;
+  padding: 8px;
+  text-align: left;
+}
+.guide-table th {
+  background: #222;
+  color: #a0d8ef;
+}
+.guide-important {
+  color: #ff7675;
+  font-weight: bold;
+}
+.guide-key {
+  background: #fff;
+  color: #000;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-weight: bold;
+  font-family: monospace;
+}
+
+/* --- 選角畫面 18人優化網格 --- */
+#select-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  padding: 20px;
+}
+.select-title {
+  font-size: 26px;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #f1c40f;
+  text-shadow: 2px 2px #000;
+}
+.select-subtitle {
+  font-size: 14px;
+  color: #ff7675;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+.char-grid {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 1500px; /* 擴大寬度以容納18人 */
+}
+.char-card {
+  width: 145px;
+  height: 220px;
+  border: 3px solid #555;
+  border-radius: 10px;
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 6px;
+  box-sizing: border-box;
+  transition: all 0.2s;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+  background-size: cover;
+  background-position: center;
+  background-color: #222;
+}
+.char-card:hover {
+  transform: scale(1.05) translateY(-5px);
+  border-color: #f39c12;
+}
+.char-card.selected {
+  border-color: #e74c3c;
+  box-shadow: 0 0 25px #e74c3c;
+}
+.char-info-box {
+  background: rgba(0,0,0,0.85);
+  padding: 5px;
+  border-radius: 5px;
+  font-size: 11px;
+  text-align: left;
+  line-height: 1.4;
+}
+.char-name {
+  font-size: 13px;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 3px;
+}
+.team-preview {
+  font-size: 20px;
+  margin-bottom: 20px;
+  height: 30px;
+  font-weight: bold;
+}
+.start-btn {
+  background: #c0392b;
+  color: white;
+  border: 3px solid #000;
+  padding: 15px 50px;
+  font-size: 22px;
+  font-weight: bold;
+  cursor: pointer;
+  transform: skewX(-15deg);
+  box-shadow: 4px 4px 0 #000;
+  transition: all 0.2s;
+}
+.start-btn:disabled {
+  background: #555;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* --- 戰鬥畫面 --- */
+#game-screen {
+  display: none;
+  position: relative;
+  width: 100vw;
+  height: 80vh;
+  background: radial-gradient(circle, #2c3e50 0%, #000000 100%);
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 20px;
+}
+.ui-panel {
+  width: 95%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.status-bar {
+  width: 44%;
+  background: #1a1a1a;
+  padding: 10px;
+  border: 3px solid #444;
+  transform: skewX(-10deg);
+  position: relative;
+}
+.char-id-txt {
+  font-weight: bold;
+  font-size: 18px;
+  color: #f39c12;
+  text-shadow: 1px 1px #000;
+}
+.bar-container {
+  width: 100%;
+  background: #333;
+  height: 18px;
+  margin: 6px 0;
+  border: 1px solid #000;
+  position: relative;
+}
+.hp-bar {
+  width: 100%;
+  height: 100%;
+  background: #2ecc71;
+  transition: width 0.2s, background-color 0.2s;
+}
+.hp-bar.danger {
+  background: #e74c3c !important;
+  animation: hp-flash 0.5s infinite alternate;
+}
+.stamina-bar {
+  width: 100%;
+  height: 100%;
+  background: #f1c40f;
+  transition: width 0.1s;
+}
+.bar-label {
+  position: absolute;
+  top: 0;
+  left: 5px;
+  font-size: 11px;
+  font-weight: bold;
+  color: #fff;
+  line-height: 18px;
+  text-shadow: 1px 1px #000;
+}
+@keyframes hp-flash {
+  0% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+.ult-badge {
+  position: absolute;
+  bottom: -15px;
+  left: 10px;
+  background: #e74c3c;
+  color: #fff;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 3px;
+  display: none;
+  box-shadow: 0 0 10px #e74c3c;
+}
+.stage {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  width: 85%;
+  height: 55%;
+  border-bottom: 4px solid #444;
+  position: relative;
+}
+.fighter-slot {
+  width: 220px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  transition: transform 0.1s ease;
+}
+.character-sprite {
+  width: 180px;
+  height: 260px;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(255,255,255,0.1);
+  position: relative;
+  transition: all 0.2s;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 15px;
+  font-weight: bold;
+  color: #fff;
+  font-size: 20px;
+  text-shadow: 2px 2px 4px #000;
+  border: 2px solid #555;
+  box-sizing: border-box;
+}
+.defending .character-sprite {
+  border: 5px solid #3498db;
+  box-shadow: 0 0 30px #3498db;
+}
+.state-text {
+  position: absolute;
+  top: -40px;
+  font-size: 16px;
+  font-weight: bold;
+  background: #3498db;
+  padding: 2px 10px;
+  border-radius: 5px;
+  color: #fff;
+  z-index: 10;
+}
+.control-panel {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  width: 95%;
+  justify-content: center;
+}
+.skill-btn {
+  background: #fff;
+  color: #000;
+  border: 3px solid #000;
+  padding: 12px 18px;
+  font-size: 15px;
+  font-weight: bold;
+  transform: skewX(-15deg);
+  box-shadow: 4px 4px 0px #444;
+  text-align: left;
+  flex: 1;
+  max-width: 210px;
+  cursor: pointer;
+}
+.skill-btn span {
+  display: inline-block;
+  background: #000;
+  color: #fff;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-right: 6px;
+  font-family: monospace;
+}
+.skill-btn.active-press {
+  background: #f39c12 !important;
+  color: #fff;
+  transform: skewX(-15deg) translate(2px, 2px);
+  box-shadow: 1px 1px 0px #000;
+}
+#btn-keyC { background: #9b59b6; color: #fff; border-color: #000; }
+#btn-keyD { background: #222; color: #555; border-color: #444; cursor: not-allowed; opacity: 0.5; }
+#btn-keyD.ready {
+  background: linear-gradient(45deg, #d35400, #c0392b) !important;
+  color: #fff !important;
+  border-color: #fff !important;
+  cursor: pointer;
+  opacity: 1;
+  animation: ult-pulse 0.8s infinite alternate;
+  box-shadow: 0 0 20px #e74c3c;
+}
+@keyframes ult-pulse {
+  0% { transform: skewX(-15deg) scale(1); }
+  100% { transform: skewX(-15deg) scale(1.03); }
+}
+#fx-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 99;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 50px;
+  font-weight: 900;
+  font-style: italic;
+  text-shadow: 4px 4px 0px #000;
+  opacity: 0;
+  transition: opacity 0.1s;
+  text-align: center;
+}
+#story-clear-panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+  z-index: 150;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0,0,0,0.92);
+}
+#story-clear-card {
+  width: min(560px, 90%);
+  padding: 24px;
+  background: linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.45));
+  border: 3px solid #e67e22;
+  border-radius: 18px;
+  box-shadow: 0 0 40px rgba(230,126,34,0.6);
+  text-align: center;
+  color: #fff;
+}
+#story-clear-card h2 {
+  margin: 0 0 16px;
+  font-size: 32px;
+  color: #f1c40f;
+}
+#story-clear-card p {
+  margin: 0 0 20px;
+  line-height: 1.5;
+}
+#story-clear-card button {
+  background: #e67e22;
+  color: #fff;
+  border: 2px solid #fff;
+  border-radius: 10px;
+  padding: 12px 22px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.ult-freeze-text {
+  animation: blink 0.1s infinite alternate;
+  font-size: 60px !important;
+  letter-spacing: 2px;
+}
+@keyframes blink {
+  0% { transform: scale(1); color: #fff; }
+  100% { transform: scale(1.08); color: #ff3f34; }
+}
+.shake-effect { animation: shake 0.12s infinite; }
+@keyframes shake {
+  0% { transform: translate(3px, 3px); }
+  50% { transform: translate(-3px, -3px); }
+  100% { transform: translate(3px, -3px); }
+}
+.mode-panel {
+  width: 95%;
+  max-width: 1200px;
+  margin: 0 auto 10px;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+  color: #f1c40f;
+  font-weight: bold;
+}
+.mode-panel label {
+  cursor: pointer;
+}
+#skill-select-screen {
+  display: none;
+  min-height: 60vh;
+  padding: 20px;
+  text-align: center;
+}
+.skill-select-box {
+  background: #111;
+  border: 2px solid #c0392b;
+  border-radius: 12px;
+  margin: 0 auto;
+  max-width: 1000px;
+  padding: 20px;
+}
+.skill-select-box h2 {
+  margin-top: 0;
+  color: #f1c40f;
+}
+.skill-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+  margin: 20px 0;
+}
+.skill-option {
+  background: #1b1b1b;
+  border: 2px solid #333;
+  border-radius: 12px;
+  padding: 14px;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.2s, transform 0.15s;
+}
+.skill-option:hover {
+  transform: translateY(-2px);
+  border-color: #f39c12;
+}
+.skill-option.active {
+  border-color: #e74c3c;
+  box-shadow: 0 0 18px rgba(231,76,60,0.35);
+}
+.skill-option h3 {
+  margin: 0 0 8px;
+  color: #fff;
+}
+.skill-option p {
+  margin: 4px 0;
+  color: #ddd;
+  font-size: 14px;
+}
+.skill-footer {
+  margin-top: 22px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.skill-footer button {
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  padding: 14px 24px;
+  font-size: 16px;
+  font-weight: bold;
+}
+.skill-footer .cancel-btn { background: #333; color: #fff; }
+.skill-footer .confirm-btn { background: #e74c3c; color: #fff; }
+.skill-warning {
+  color: #ff7675;
+  font-weight: bold;
+  margin-top: 12px;
+}
+</style>
+</head>
+<body>
+
+<header>銀魂 Soul of Tsukkomi - 奧義暗轉修羅車輪戰版</header>
+
+<div class="difficulty-panel" style="flex-wrap: wrap; gap: 10px;">
+  <div style="display:flex; align-items:center; gap:10px; font-weight:bold; color:#f1c40f;">
+    <span>🎭 選擇遊戲模式：</span>
+    <label><input type="radio" name="game-mode" value="versus" checked onchange="selectMode('versus')"> 競技模式 3V3</label>
+    <label><input type="radio" name="game-mode" value="story" onchange="selectMode('story')"> 劇情模式 1V1</label>
+    <label><input type="radio" name="game-mode" value="challenge" onchange="selectMode('challenge')"> 🏆 挑戰賽計分</label>
+  </div>
+  <label for="diff-select" style="font-weight: bold; color: #f1c40f;">💀 選擇對弈階級：</label>
+  <select id="diff-select" class="diff-select" onchange="changeDifficulty()">
+    <option value="beginner">初心練習 (AI極低攻擊 / 贏回30%血)</option>
+    <option value="easy">新手練習 (AI常發呆 / 贏回25%血)</option>
+    <option value="normal">電競標準 (經典攻防 / 贏回15%血)</option>
+    <option value="veteran">資深挑戰 (AI反擊穩定 / 贏回10%血)</option>
+    <option value="hard">真·地獄 (AI會反擊 / 贏回8%血)</option>
+    <option value="god">修羅級 (完美格擋率極高 / 贏回3%血)</option>
+    <option value="kami" selected>神明級 (讀指令惡魔 / ⚠️打贏完全不回血)</option>
+  </select>
+  <button class="guide-toggle-btn" onclick="toggleGuide()">📖 隱藏/顯示遊戲教學</button>
+  <button class="guide-toggle-btn" onclick="showChallengeRecords()" style="background: #27ae60;">🏆 挑戰賽排行榜</button>
+  <button class="guide-toggle-btn" onclick="saveStoryProgress()" style="background: #2980b9;">💾 儲存劇情進度</button>
+  <button class="guide-toggle-btn" onclick="loadStoryProgress(true)" style="background: #8e44ad;">📂 載入劇情進度</button>
+  <button class="guide-toggle-btn" onclick="openUpgradePanel()" style="background: #d35400;">🔧 升級角色</button>
+  <button class="guide-toggle-btn" onclick="resetStoryProgress()" style="background: #7f8c8d;">♻️ 重置劇情</button>
+</div>
+  
+
+<div class="guide-container" id="guide-panel">
+  <h2 style="margin-top:0; color:#e74c3c; text-align:center;">⚔️ 萬事屋/真選組/攘夷志士 究極格鬥手冊 ⚔️</h2>
+  <div class="guide-section">
+    <h3>🎮 鍵盤基礎操作指令</h3>
+    <table class="guide-table">
+      <thead>
+        <tr>
+          <th style="width:15%">按鍵</th>
+          <th style="width:20%">招式類型</th>
+          <th>核心效果與體力變動</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="guide-key">A</span></td>
+          <td style="color:#2ecc71;">輕技</td>
+          <td>速度快、傷害低。出招成功時能 <strong>【恢復 15 點體力】</strong>。</td>
+        </tr>
+        <tr>
+          <td><span class="guide-key">S</span></td>
+          <td style="color:#e6b800;">重技</td>
+          <td>威力大、傷害高。每次使用 <strong>【消耗 25 點體力】</strong>。</td>
+        </tr>
+        <tr>
+          <td><span class="guide-key">C</span></td>
+          <td style="color:#9b59b6;">破防技</td>
+          <td>每次使用 <strong>【消耗 20 點體力】</strong>。專門摧毀防禦狀態的敵人。</td>
+        </tr>
+        <tr>
+          <td><span class="guide-key">Space</span></td>
+          <td style="color:#3498db;">長按防禦</td>
+          <td>抵擋輕重擊（減傷90%），會以 <strong>【每0.1秒消耗10點】</strong> 的速度消耗體力！</td>
+        </tr>
+        <tr>
+          <td><span class="guide-key">D</span></td>
+          <td style="color:#ff2a2a;">絕境奧義</td>
+          <td>當角色 <strong>【血量低於 30%】</strong> 時解鎖。無視防守、傷害驚人！</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 升級面板（隱藏） -->
+<div id="upgrade-panel" style="display:none; position:fixed; right:20px; top:120px; width:320px; max-height:60vh; overflow:auto; background:#111; border:3px solid #c0392b; border-radius:8px; padding:12px; z-index:200; box-shadow:0 8px 30px rgba(0,0,0,0.8);">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+    <div style="font-weight:bold; color:#f1c40f;">🔧 升級角色</div>
+    <div style="display:flex; gap:6px;"><button onclick="closeUpgradePanel()" style="background:#333; color:#fff; border:2px solid #000; padding:4px 8px; cursor:pointer;">關閉</button></div>
+  </div>
+  <div id="upgrade-list"></div>
+</div>
+
+<!-- --- 選角畫面 --- -->
+<div id="select-screen">
+  <div class="select-title">請選擇 3 位出賽選手</div>
+  <div class="select-subtitle">💡 提示：陣容已擴充至 18 人！新增大萌寵【定春】與萬惡炸彈【傑士塔威】！</div>
+  <div class="char-grid" id="select-grid"></div>
+  <div class="team-preview" id="team-display">已選擇隊員：無</div>
+  <button class="start-btn" id="start-game-btn" disabled onclick="startGame()">建立究極車輪戰！</button>
+</div>
+
+<div id="skill-select-screen">
+  <div class="skill-select-box">
+    <h2 id="skill-select-title">為角色裝備 3 種招式</h2>
+    <div class="skill-warning">從 5 種招式中選擇 3 種，對戰時使用 A / S / C 施放。</div>
+    <div class="skill-grid" id="skill-options"></div>
+    <div class="skill-footer">
+      <button class="cancel-btn" onclick="cancelSkillSelection()">返回選角</button>
+      <button class="confirm-btn" id="confirm-skill-btn" onclick="confirmMoveSelection()" disabled>確認並繼續</button>
+    </div>
+  </div>
+</div>
+
+<!-- --- 戰鬥畫面 --- -->
+<div id="game-screen">
+  <div class="ui-panel">
+    <div class="status-bar" id="p1-panel">
+      <div id="p1-name-display" class="char-id-txt">PLAYER</div>
+      <div class="bar-container"><div id="p1-hp" class="hp-bar"></div><span id="p1-hp-text" class="bar-label">HP: --/--</span></div>
+      <div class="bar-container"><div id="p1-stamina" class="stamina-bar"></div><span id="p1-stm-text" class="bar-label" style="color:#000;">STAMINA (體力值)</span></div>
+      <div class="ult-badge" id="p1-ult-badge">GUTS 奧義可用</div>
+    </div>
+    <div class="status-bar" style="text-align: right;" id="p2-panel">
+      <div id="p2-name-display" class="char-id-txt">ENEMY</div>
+      <div class="bar-container"><div id="p2-hp" class="hp-bar" style="float: right;"></div><span id="p2-hp-text" class="bar-label" style="right:5px; left:auto;">HP: --/--</span></div>
+      <div class="bar-container"><div id="p2-stamina" class="stamina-bar" style="float: right; background: #f1c40f;"></div><span id="p2-stm-text" class="bar-label" style="color:#000; right:5px; left:auto;">STAMINA (體力值)</span></div>
+      <div class="ult-badge" id="p2-ult-badge" style="right:10px; left:auto; background:#8e44ad;">AI GUTS 奧義儲備</div>
+    </div>
+  </div>
+  <div class="stage" id="battle-stage">
+    <div class="fighter-slot" id="player-fighter">
+      <div id="player-state" class="state-text" style="display:none;">防禦中</div>
+      <div class="character-sprite" id="p1-sprite"></div>
+    </div>
+    <div class="fighter-slot" id="enemy-fighter" style="transform: scaleX(-1);">
+      <div id="enemy-state" class="state-text" style="transform: scaleX(-1); display:none;">格擋中</div>
+      <div class="character-sprite" id="p2-sprite"></div>
+    </div>
+  </div>
+  <div class="control-panel">
+    <div class="skill-btn" id="btn-keyA"><span>A</span><span id="txt-skill1">輕技 (速/回體)</span></div>
+    <div class="skill-btn" id="btn-keyS"><span>S</span><span id="txt-skill2">重技 (強/耗25體)</span></div>
+    <div class="skill-btn" id="btn-keyC"><span>C</span><span id="txt-skill3">破防技 (克防守/耗20體)</span></div>
+    <div class="skill-btn" id="btn-keyD"><span>D</span><span id="txt-ult">絕境奧義 (鎖定)</span></div>
+    <div class="skill-btn" id="btn-keySpace" style="background:#333; color:#fff; max-width: 150px;"><span>Space</span>長按防禦</div>
+  </div>
+</div>
+
+<div id="fx-overlay"></div>
+<div id="story-clear-panel">
+  <div id="story-clear-card">
+    <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+      <div class="story-clear-overlay" style="background:rgba(0,0,0,0.48); padding:18px; border-radius:12px; max-width:88%;">
+        <h2 id="story-clear-title">劇情關卡通過！</h2>
+        <p id="story-clear-text">你已通過資深挑戰級劇情關卡。</p>
+        <div style="margin-top:12px; display:flex; gap:10px; justify-content:center;">
+          <button onclick="closeStoryClearPanel()">返回選角畫面</button>
+          <button onclick="startShuraNow()" style="background:#8e44ad;">立即開始修羅級</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function toggleGuide() {
+  const panel = document.getElementById('guide-panel');
+  panel.style.display = (panel.style.display === 'none') ? 'block' : 'none';
+}
+
+let audioCtx = null;
+function initAudio() {
+  if (!audioCtx) { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+}
+function playSound(type) {
+  if (!audioCtx) return;
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  const now = audioCtx.currentTime;
+  let osc = audioCtx.createOscillator();
+  let gain = audioCtx.createGain();
+  osc.connect(gain); gain.connect(audioCtx.destination);
+  if (type === 'hit_light') {
+    osc.type = 'triangle'; osc.frequency.setValueAtTime(400, now); gain.gain.setValueAtTime(0.2, now); osc.start(now); osc.stop(now + 0.08);
+  } else if (type === 'hit_heavy') {
+    osc.type = 'sawtooth'; osc.frequency.setValueAtTime(200, now); osc.frequency.linearRampToValueAtTime(40, now + 0.2); gain.gain.setValueAtTime(0.3, now); osc.start(now); osc.stop(now + 0.2);
+  } else if (type === 'guard') {
+    osc.type = 'sine'; osc.frequency.setValueAtTime(1200, now); gain.gain.setValueAtTime(0.2, now); osc.start(now); osc.stop(now + 0.1);
+  } else if (type === 'break') {
+    osc.type = 'sawtooth'; osc.frequency.setValueAtTime(80, now); osc.frequency.linearRampToValueAtTime(400, now + 0.3); gain.gain.setValueAtTime(0.4, now); osc.start(now); osc.stop(now + 0.3);
+  } else if (type === 'select') {
+    osc.type = 'sine'; osc.frequency.setValueAtTime(650, now); gain.gain.setValueAtTime(0.1, now); osc.start(now); osc.stop(now + 0.06);
+  } else if (type === 'ult_boom') {
+    osc.type = 'sawtooth'; osc.frequency.setValueAtTime(50, now); osc.frequency.exponentialRampToValueAtTime(1000, now + 0.5); gain.gain.setValueAtTime(0.5, now); osc.start(now); osc.stop(now + 0.5);
+  } else if (type === 'heal') {
+    osc.type = 'sine'; osc.frequency.setValueAtTime(500, now); osc.frequency.exponentialRampToValueAtTime(900, now + 0.25); gain.gain.setValueAtTime(0.2, now); osc.start(now); osc.stop(now + 0.25);
+  } else if (type === 'freeze_alert') {
+    osc.type = 'sawtooth'; osc.frequency.setValueAtTime(880, now); osc.frequency.setValueAtTime(440, now + 0.15); gain.gain.setValueAtTime(0.4, now); osc.start(now); osc.stop(now + 0.3);
+  }
+}
+
+// 🌟 18 人終極角色庫 (追加定春、傑士塔威)
+const charData = {
+  '坂田銀時': { maxHp: 100, maxStm: 100, atk: 1.00, def: 1.00, img:'坂田銀時.jpg', s1: '洞爺湖連擊', s2: '小綿羊衝撞', ult: '【糖分暴走·白夜叉殘影斬】', color: '#a0d8ef' },
+  '志村新八': { maxHp: 90,  maxStm: 120, atk: 1.15, def: 0.85, img:'志村新八.jpg', s1: '天堂無心流', s2: '眼鏡飛擊', ult: '【存在感逆襲·眼鏡星爆】', color: '#96514d' },
+  '神樂':     { maxHp: 120, maxStm: 90,  atk: 0.90, def: 1.10, img:'神樂.jpg', s1: '夜兔怪力拳', s2: '夜兔傘彈發射', ult: '【夜兔血脈·極限臨界暴走】', color: '#e94747' },
+  '土方十四郎':{ maxHp: 105, maxStm: 100, atk: 1.05, def: 0.95, img:'土方十四郎.jpg', s1: '真選組拔刀術', s2: '美乃滋火箭炮', ult: '【局中法度·美乃滋地獄火】', color: '#2c3e50' },
+  '沖田總悟': { maxHp: 85,  maxStm: 110, atk: 1.25, def: 0.75, img:'沖田總悟.jpg', s1: '抖S巨劍揮砍', s2: '加農炮轟炸', ult: '【一番隊·抖S火箭炮狂轟】', color: '#e6b800' },
+  '近藤勳':   { maxHp: 115, maxStm: 80,  atk: 0.85, def: 1.20, img:'近藤勳.jpg', s1: '猩猩重擊', s2: '真心追隨衝撞', ult: '【局長特權·光屁股真愛追擊】', color: '#8b5a2b' },
+  '神威':     { maxHp: 95,  maxStm: 105, atk: 1.35, def: 0.70, img:'神威.jpg', s1: '第七師團連打', s2: '夜兔迅殺踢', ult: '【春雨雷霆·夜兔弒師神速連擊】', color: '#ff7675' },
+  '星海坊主': { maxHp: 125, maxStm: 85,  atk: 1.10, def: 1.15, img:'星海坊主.jpg', s1: '星際掃蕩拳', s2: '巨傘橫掃', ult: '【宇宙最強獵人·究極禿頭大砲】', color: '#ffeaa7' },
+  '桂小太郎': { maxHp: 100, maxStm: 115, atk: 1.00, def: 1.05, img:'桂小太郎.jpg', s1: '攘夷快劍', s2: '炸彈投擲', ult: '【不是假髮是炸彈·狂亂貴公子狂轟】', color: '#9b59b6' },
+  '高杉晉助': { maxHp: 95,  maxStm: 100, atk: 1.25, def: 0.80, img:'高杉晉助.jpg', s1: '鬼兵隊邪劍術', s2: '煙管突刺', ult: '【摧毀這個世界·黑色野獸之噬】', color: '#6c5ce7' },
+  '坂本辰馬': { maxHp: 105, maxStm: 120, atk: 0.95, def: 0.95, img:'坂本辰馬.jpg', s1: '快援流手槍擊', s2: '商人的談判術', ult: '【啊哈哈哈哈·快援隊宇宙艦隊突擊】', color: '#fdcb6e' },
+  '月詠':     { maxHp: 100, maxStm: 105, atk: 1.05, def: 1.00, img:'月詠.jpg', s1: '百華苦無連投', s2: '死神抗拒踢', ult: '【吉原守護者·百華苦無暴風雨】', color: '#fd79a8' },
+  '柳生九兵衛':{ maxHp: 90,  maxStm: 110, atk: 1.20, def: 0.80, img:'柳生九兵衛.jpg', s1: '柳生新陰流·疾風', s2: '敏捷反轉摔', ult: '【名門繼承者·柳生新陰流絕技】', color: '#00cec9' },
+  '伊莉莎白': { maxHp: 135, maxStm: 75,  atk: 0.85, def: 1.25, img:'伊莉莎白.jpg', s1: '牌子猛擊', s2: '神秘腿毛連踢', ult: '【桂先生由我守護·木牌狂暴轟炸】', color: '#dfe6e9' },
+  '猿飛菖蒲': { maxHp: 95,  maxStm: 115, atk: 1.15, def: 0.80, img:'猿飛菖蒲.jpg', s1: '飛鏢追蹤襲', s2: '癡女大跨步', ult: '【銀時命定之鎖·納豆束縛連擊】', color: '#e84393' },
+  '服部全藏': { maxHp: 105, maxStm: 100, atk: 1.05, def: 1.00, img:'服部全藏.jpg', s1: '御庭番御用刀', s2: '苦無陷阱置', ult: '【精英忍者摩利支天·忍法密技爆殺】', color: '#d63031' },
+  '定春':     { maxHp: 140, maxStm: 75,  atk: 0.95, def: 1.20, img:'定春.jpg', s1: '巨爪重拍', s2: '神速飛撲', ult: '【巨齒神速·爆咬銀時頭顱】', color: '#ffffff' },
+  '傑士塔威': { maxHp: 70,  maxStm: 130, atk: 1.40, def: 0.60, img:'傑士塔威.jpg', s1: '滾動撞擊', s2: '火花濺射', ult: '【工廠生產線·全彈無規律大自爆】', color: '#ffbe76' }
+};
+
+const diffSettings = {
+  beginner: { aiSpeed: 1200, readRate: 0.05, attackChance: 0.25, healBonus: 0.30, counterRate: 0.00 },
+  easy:     { aiSpeed: 1000, readRate: 0.10, attackChance: 0.40, healBonus: 0.25, counterRate: 0.00 },
+  normal:   { aiSpeed:  750, readRate: 0.30, attackChance: 0.55, healBonus: 0.15, counterRate: 0.10 },
+  veteran:  { aiSpeed:  650, readRate: 0.40, attackChance: 0.60, healBonus: 0.12, counterRate: 0.20 },
+  hard:     { aiSpeed:  550, readRate: 0.50, attackChance: 0.65, healBonus: 0.08, counterRate: 0.30 },
+  god:      { aiSpeed:  400, readRate: 0.75, attackChance: 0.75, healBonus: 0.03, counterRate: 0.50 },
+  kami:     { aiSpeed:  250, readRate: 0.95, attackChance: 0.85, healBonus: 0.00, counterRate: 0.75 }
+};
+
+let currentDiff = 'kami';
+let currentMode = 'versus';
+const storySequence = ['坂田銀時','志村新八','神樂','土方十四郎','沖田總悟','近藤勳','桂小太郎','高杉晉助','神威','星海坊主','坂本辰馬','月詠','柳生九兵衛','伊莉莎白','猿飛菖蒲','服部全藏','定春','傑士塔威'];
+const storyOpponentOrder = storySequence.slice(1);
+let storyUnlocked = ['坂田銀時'];
+let storyStage = 0;
+let storyUpgradeUnlocked = false;
+let storyShuraUnlocked = false;
+let storyKamiUnlocked = false;
+let selectedCharacters = [];
+let p1Team = [], p2Team = [];
+let currentP1Index = 0, currentP2Index = 0;
+let p1MaxHp = 100, p1MaxStm = 100, p1Hp = 100, p1Stm = 100;
+let p2MaxHp = 100, p2MaxStm = 100, p2Hp = 100, p2Stm = 100;
+let p1UltUsed = false, p2UltUsed = false;
+let isPlayerDefending = false, isEnemyDefending = false, isActioning = false;
+let gameActive = false, aiInterval, stmRegenInterval;
+let keyStatus = { 'a': false, 's': false, 'c': false, 'd': false, 'space': false };
+const fxOverlay = document.getElementById('fx-overlay');
+let equippedMoves = {};
+let skillSelectionQueue = [];
+let currentSkillChar = '';
+let currentSkillSelections = [];
+// 挑戰賽相關變數
+let challengeScore = 0;
+let challengeEnemyCount = 0;
+let challengeRecords = [];
+const allCharacters = ['坂田銀時','志村新八','神樂','土方十四郎','沖田總悟','近藤勳','神威','星海坊主','桂小太郎','高杉晉助','坂本辰馬','月詠','柳生九兵衛','伊莉莎白','猿飛菖蒲','服部全藏','定春','傑士塔威'];
+
+const charMoveNames = {
+  '坂田銀時': ['洞爺湖連擊','小綿羊衝撞','白夜叉突刺','抹茶迴旋','月光落刃'],
+  '志村新八': ['眼鏡反擊','鳳凰飛翔','無心斬','傘擊翻轉','存在感爆發'],
+  '神樂': ['怪力直拳','風桌傘擊','夜兔破防','貓拳連舞','血脈暴走'],
+  '土方十四郎': ['冰藍斬','極上隊斬','居合破防','美乃滋迴轉','真選組極限'],
+  '沖田總悟': ['抖S狂斬','加農衝刺','白牙破防','泡沫飛踢','銀色疾風'],
+  '近藤勳': ['嚴厲拳','真心衝擊','屁股破防','局長霸氣','靈魂追擊'],
+  '神威': ['夜兔刺殺','弟子之拳','毁滅破防','風速飛踢','狂獸極技'],
+  '星海坊主': ['獵人拳','大傘橫掃','貴族破防','宇宙衝擊','禿頭爆裂'],
+  '桂小太郎': ['攘夷拔刀','炸彈追擊','義士破防','貴公子笑斬','火藥風暴'],
+  '高杉晉助': ['焰管斬','黑星突刺','狂氣破防','煙管風暴','毀滅宣言'],
+  '坂本辰馬': ['飛彈連射','笑拳突擊','商談破防','快援旋風','庭師轟炸'],
+  '月詠': ['苦無舞','死神踢','影子破防','忍者突襲','吉原暴雨'],
+  '柳生九兵衛': ['疾風劍','反轉斷','斬擊破防','影舞蓄力','柳生奧義'],
+  '伊莉莎白': ['牌子重砸','腿毛連踢','奇蹟破防','神祕衝擊','鬥牌暴動'],
+  '猿飛菖蒲': ['飛鏢掃射','情慾重踏','捕獲破防','花舞衝鋒','銀時羈絆斬'],
+  '服部全藏': ['苦無飛刃','忍者疾步','陷阱破防','密技打擊','忍法爆裂'],
+  '定春': ['巨爪重拍','天空飛撲','咆哮破防','絕對衝撞','忠犬咬擊'],
+  '傑士塔威': ['滾動砸擊','火花噴射','鋼殼破防','機械突襲','自爆預備']
+};
+
+Object.keys(charMoveNames).forEach(name => {
+  const names = charMoveNames[name];
+  const moves = [
+    { id: 'm1', name: names[0], type: 'light', cost: 0, power: 13, desc: '速度快，命中時恢復體力。' },
+    { id: 'm2', name: names[1], type: 'heavy', cost: 25, power: 28, desc: '威力強，耗體高。' },
+    { id: 'm3', name: names[2], type: 'break', cost: 20, power: 22, desc: '破防專用，對防守對象效果更好。' },
+    { id: 'm4', name: names[3], type: 'charge', cost: 12, power: 19, desc: '蓄力攻擊，穩定輸出。' },
+    { id: 'm5', name: names[4], type: 'special', cost: 18, power: 24, desc: '特殊技擊中後回體少量。' }
+  ];
+  charData[name].moves = moves;
+});
+
+// 劇情進度與角色等級系統
+let storyProgress = { levels: {}, xp: {} };
+function xpToLevel(level) { return 100 + (level - 1) * 50; }
+function levelUpCharacter(name) {
+  const oldLv = storyProgress.levels[name] || 1;
+  const newLv = oldLv + 1;
+  storyProgress.levels[name] = newLv;
+  const c = charData[name];
+  c.maxHp = Math.max(1, Math.floor(c.maxHp * 1.08));
+  c.maxStm = Math.max(1, Math.floor(c.maxStm * 1.05));
+  c.atk = +(c.atk * 1.05).toFixed(2);
+  c.def = +(c.def * 1.05).toFixed(2);
+  alert(`🔺 ${name} 升級至 LV.${newLv}！屬性獲得提升。`);
+}
+
+function grantStoryXP(name, amount) {
+  if (!name) return;
+  storyProgress.xp[name] = (storyProgress.xp[name] || 0) + amount;
+  while (storyProgress.xp[name] >= xpToLevel(storyProgress.levels[name] || 1)) {
+    storyProgress.xp[name] -= xpToLevel(storyProgress.levels[name] || 1);
+    levelUpCharacter(name);
+  }
+  saveStoryProgress();
+}
+
+function saveStoryProgress() {
+  try {
+    const data = {
+      storyUnlocked,
+      storyStage,
+      levels: storyProgress.levels,
+      xp: storyProgress.xp,
+      storyUpgradeUnlocked,
+      storyShuraUnlocked,
+      storyKamiUnlocked
+    };
+    localStorage.setItem('storyProgress', JSON.stringify(data));
+    alert('✅ 劇情進度已儲存');
+  } catch (e) { alert('⚠️ 儲存失敗：' + e.message); }
+}
+
+function loadStoryProgress(showAlert = false) {
+  try {
+    const saved = localStorage.getItem('storyProgress');
+    if (!saved) { if (showAlert) alert('未找到儲存的劇情進度'); return; }
+    const d = JSON.parse(saved);
+    storyUnlocked = d.storyUnlocked || storyUnlocked;
+    storyStage = typeof d.storyStage === 'number' ? d.storyStage : storyStage;
+    storyProgress.levels = d.levels || {};
+    storyProgress.xp = d.xp || {};
+    storyUpgradeUnlocked = !!d.storyUpgradeUnlocked;
+    storyShuraUnlocked = !!d.storyShuraUnlocked;
+    storyKamiUnlocked = !!d.storyKamiUnlocked;
+    renderSelectScreen(); updateModeUI();
+    if (showAlert) alert('✅ 劇情進度已載入');
+  } catch (e) { if (showAlert) alert('⚠️ 載入失敗：' + e.message); }
+}
+
+// 升級面板相關函式
+function openUpgradePanel() {
+  renderUpgradePanel();
+  document.getElementById('upgrade-panel').style.display = 'block';
+}
+function closeUpgradePanel() { document.getElementById('upgrade-panel').style.display = 'none'; }
+
+function renderUpgradePanel() {
+  const list = document.getElementById('upgrade-list');
+  list.innerHTML = '';
+  if (!storyUpgradeUnlocked) {
+    list.innerHTML = '<div style="color:#bbb;">尚未解鎖角色升級系統。請先通過資深挑戰級劇情線。</div>';
+    return;
+  }
+  const chars = storyUnlocked.slice();
+  if (chars.length === 0) {
+    list.innerHTML = '<div style="color:#bbb;">尚無已解鎖角色。通過劇情模式解鎖角色。</div>';
+    return;
+  }
+  chars.forEach(name => {
+    const lv = storyProgress.levels[name] || 1;
+    const xp = storyProgress.xp[name] || 0;
+    const need = xpToLevel(lv);
+    const row = document.createElement('div');
+    row.style.display = 'flex'; row.style.justifyContent = 'space-between'; row.style.alignItems = 'center'; row.style.padding = '6px 0'; row.style.borderBottom = '1px solid #222';
+    row.innerHTML = `
+      <div style="max-width:180px;"><div style="font-weight:bold;color:${charData[name].color}">${name} (LV.${lv})</div><div style="font-size:12px;color:#ccc;">經驗: ${xp} / ${need}</div></div>
+      <div style="display:flex; gap:6px; align-items:center;">
+        <button onclick="upgradeCharacter('${name}')" style="background:#e67e22; border:2px solid #000; color:#fff; padding:6px 8px; cursor:pointer;">升級</button>
+      </div>
+    `;
+    list.appendChild(row);
+  });
+}
+
+function upgradeCharacter(name) {
+  const lv = storyProgress.levels[name] || 1;
+  const xp = storyProgress.xp[name] || 0;
+  const need = xpToLevel(lv);
+  if (xp >= need) {
+    storyProgress.xp[name] = xp - need;
+    levelUpCharacter(name);
+    saveStoryProgress();
+    renderSelectScreen(); renderUpgradePanel();
+  } else {
+    alert(`⚠️ ${name} 的經驗不足：需要 ${need}，目前 ${xp}`);
+  }
+}
+
+function resetStoryProgress() {
+  if (!confirm('確定要重置劇情進度與角色等級嗎？此操作會清除所有儲存的劇情進度，無法還原。')) return;
+  try {
+    localStorage.removeItem('storyProgress');
+    // reset in-memory state
+    storyUnlocked = ['坂田銀時'];
+    storyStage = 0;
+    storyUpgradeUnlocked = false;
+    storyShuraUnlocked = false;
+    storyKamiUnlocked = false;
+    storyProgress = { levels: {}, xp: {} };
+    renderSelectScreen(); updateModeUI();
+    alert('✅ 已重置劇情進度與角色等級。');
+  } catch (e) { alert('⚠️ 重置失敗：' + e.message); }
+}
+
+function getCharacterMoves(name) {
+  if (!equippedMoves[name]) {
+    prepareDefaultMoves(name);
+  }
+  return equippedMoves[name];
+}
+
+function prepareDefaultMoves(name) {
+  if (!equippedMoves[name]) {
+    equippedMoves[name] = charData[name].moves.slice(0, 3);
+  }
+}
+
+function selectMode(mode) {
+  currentMode = mode;
+  selectedCharacters = [];
+  document.querySelectorAll('.char-card.selected').forEach(card => card.classList.remove('selected'));
+  document.getElementById('skill-select-screen').style.display = 'none';
+  document.getElementById('game-screen').style.display = 'none';
+  document.getElementById('select-screen').style.display = 'flex';
+  if (currentMode === 'challenge') {
+    challengeScore = 0;
+    challengeEnemyCount = 0;
+    document.getElementById('diff-select').value = 'kami';
+    currentDiff = 'kami';
+  }
+  if (currentMode === 'story') {
+    document.getElementById('diff-select').value = 'veteran';
+    currentDiff = 'veteran';
+  }
+  renderSelectScreen();
+  updateModeUI();
+}
+
+function updateModeUI() {
+  const title = document.querySelector('#select-screen .select-title');
+  const subtitle = document.querySelector('#select-screen .select-subtitle');
+  const button = document.getElementById('start-game-btn');
+  const diffSelect = document.getElementById('diff-select');
+  if (currentMode === 'story') {
+    title.innerText = '劇情模式：請選擇一位已解鎖角色';
+    let diffLabel = '難度固定：資深挑戰級';
+    if (storyKamiUnlocked) diffLabel = '可選難度：資深挑戰級 / 修羅級 / 神明級';
+    else if (storyShuraUnlocked) diffLabel = '可選難度：資深挑戰級 / 修羅級';
+    subtitle.innerText = `劇情進度：第 ${storyStage + 1} 關 / ${storyOpponentOrder.length} 關，敵人：${storyOpponentOrder[storyStage] || '最終BOSS'} | ${diffLabel}`;
+    button.innerText = '開始劇情 1V1';
+    button.disabled = selectedCharacters.length !== 1;
+    if (storyKamiUnlocked || storyShuraUnlocked) {
+      diffSelect.disabled = false;
+      if (currentDiff !== 'god' && currentDiff !== 'kami') currentDiff = 'veteran';
+      if (currentDiff === 'kami' && !storyKamiUnlocked) currentDiff = storyShuraUnlocked ? 'god' : 'veteran';
+      if (currentDiff === 'god' && !storyShuraUnlocked) currentDiff = 'veteran';
+      diffSelect.value = currentDiff;
+    } else {
+      diffSelect.disabled = true;
+      diffSelect.value = 'veteran';
+      currentDiff = 'veteran';
+    }
+  } else if (currentMode === 'challenge') {
+    title.innerText = '🏆 挑戰賽：請選擇一位角色';
+    const topRecord = challengeRecords.length > 0 ? Math.max(...challengeRecords.map(r => r.score)) : 0;
+    subtitle.innerText = `當前最高分：${topRecord} | 已儲存戰績：${challengeRecords.length} 筆 | 難度固定：神明級 (最高難度)`;
+    button.innerText = '開始挑戰賽！';
+    button.disabled = selectedCharacters.length !== 1;
+    diffSelect.disabled = true;
+    diffSelect.value = 'kami';
+  } else {
+    title.innerText = '請選擇 3 位出賽選手';
+    subtitle.innerText = '💡 提示：陣容已擴充至 18 人！新增大萌寵【定春】與萬惡炸彈【傑士塔威】！';
+    button.innerText = '建立究極車輪戰！';
+    button.disabled = selectedCharacters.length !== 3;
+    diffSelect.disabled = false;
+  }
+  document.getElementById('team-display').innerText = currentMode === 'story' ? `已選擇角色：${selectedCharacters[0] || '無'}` : currentMode === 'challenge' ? `已選擇角色：${selectedCharacters[0] || '無'}` : `已選擇隊員：${selectedCharacters.length > 0 ? selectedCharacters.join('、') : '無'}`;
+}
+
+function getPlayerMoveByKey(key) {
+  const mapping = { a: 0, s: 1, c: 2 };
+  const fighter = p1Team[currentP1Index] || selectedCharacters[0] || storyUnlocked[0];
+  const moves = getCharacterMoves(fighter);
+  return moves[mapping[key]];
+}
+
+function renderSelectScreen() {
+  const grid = document.getElementById('select-grid');
+  grid.innerHTML = '';
+  const chars = currentMode === 'story' ? storyUnlocked : Object.keys(charData);
+  chars.forEach(name => {
+    const c = charData[name];
+    const card = document.createElement('div');
+    card.className = 'char-card';
+    card.id = `card-${name}`;
+    card.style.backgroundImage = `url('${c.img}')`;
+    card.innerHTML = `
+      <div class="char-info-box">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div class="char-name" style="color:${c.color}">${name}</div>
+          <div style="font-weight:bold; color:#ffd166;">LV.${storyProgress.levels[name] || 1}</div>
+        </div>
+        血量: ${c.maxHp} | 體力: ${c.maxStm}<br>
+        攻: x${c.atk} | 防: x${c.def}
+      </div>
+    `;
+    card.onclick = () => { initAudio(); playSound('select'); toggleSelect(name); };
+    if (selectedCharacters.includes(name)) card.classList.add('selected');
+    grid.appendChild(card);
+  });
+  updateModeUI();
+}
+
+function toggleSelect(name) {
+  const card = document.getElementById(`card-${name}`);
+  const idx = selectedCharacters.indexOf(name);
+  if (currentMode === 'story' || currentMode === 'challenge') {
+    if (idx > -1) {
+      selectedCharacters = [];
+      card.classList.remove('selected');
+    } else {
+      selectedCharacters = [name];
+      document.querySelectorAll('.char-card.selected').forEach(cardElement => cardElement.classList.remove('selected'));
+      card.classList.add('selected');
+    }
+  } else {
+    if (idx > -1) {
+      selectedCharacters.splice(idx, 1);
+      card.classList.remove('selected');
+    } else if (selectedCharacters.length < 3) {
+      selectedCharacters.push(name);
+      card.classList.add('selected');
+    }
+  }
+  updateModeUI();
+}
+
+function changeDifficulty() {
+  if (currentMode === 'challenge') {
+    document.getElementById('diff-select').value = 'kami';
+    currentDiff = 'kami';
+    return;
+  }
+  if (currentMode === 'story') {
+    const selected = document.getElementById('diff-select').value;
+    if (selected === 'kami' && storyKamiUnlocked) currentDiff = 'kami';
+    else if (selected === 'god' && storyShuraUnlocked) currentDiff = 'god';
+    else currentDiff = 'veteran';
+    document.getElementById('diff-select').value = currentDiff;
+    return;
+  }
+  currentDiff = document.getElementById('diff-select').value;
+  if (gameActive) {
+    clearInterval(aiInterval);
+    aiInterval = setInterval(enemyAI, diffSettings[currentDiff].aiSpeed);
+  }
+}
+
+function startGame() {
+  if (currentMode === 'story' && selectedCharacters.length !== 1) return;
+  if (currentMode === 'challenge' && selectedCharacters.length !== 1) return;
+  if (currentMode === 'versus' && selectedCharacters.length !== 3) return;
+  initAudio();
+  document.getElementById('guide-panel').style.display = 'none';
+  skillSelectionQueue = [...selectedCharacters];
+  currentSkillChar = skillSelectionQueue[0];
+  currentSkillSelections = [];
+  document.getElementById('select-screen').style.display = 'none';
+  document.getElementById('skill-select-screen').style.display = 'block';
+  renderSkillSelection();
+}
+
+function beginBattle() {
+  p1Team = [...selectedCharacters];
+  if (currentMode === 'story') {
+    p2Team = [storyOpponentOrder[storyStage]];
+  } else if (currentMode === 'challenge') {
+    const playerChar = selectedCharacters[0];
+    const availableEnemies = Object.keys(charData).filter(c => c !== playerChar);
+    p2Team = [availableEnemies[Math.floor(Math.random() * availableEnemies.length)]];
+    challengeEnemyCount++;
+  } else {
+    const allChars = Object.keys(charData);
+    p2Team = allChars.filter(c => !p1Team.includes(c)).sort(() => 0.5 - Math.random()).slice(0, 3);
+  }
+
+  document.getElementById('skill-select-screen').style.display = 'none';
+  document.getElementById('game-screen').style.display = 'flex';
+  gameActive = true;
+
+  currentP1Index = 0; currentP2Index = 0;
+  let p1Name = p1Team[0]; p1MaxHp = charData[p1Name].maxHp; p1MaxStm = charData[p1Name].maxStm; p1Hp = p1MaxHp; p1Stm = p1MaxStm;
+  let p2Name = p2Team[0]; p2MaxHp = charData[p2Name].maxHp; p2MaxStm = charData[p2Name].maxStm; p2Hp = p2MaxHp; p2Stm = p2MaxStm;
+  prepareDefaultMoves(p1Name);
+  prepareDefaultMoves(p2Name);
+  setupMatchUI();
+  currentDiff = document.getElementById('diff-select').value;
+  aiInterval = setInterval(enemyAI, diffSettings[currentDiff].aiSpeed);
+  stmRegenInterval = setInterval(handleStaminaLogic, 300);
+  window.addEventListener('keydown', handleKeyDown);
+  window.addEventListener('keyup', handleKeyUp);
+}
+
+function renderSkillSelection() {
+  const title = document.getElementById('skill-select-title');
+  title.innerText = `為 ${currentSkillChar} 選擇 3 種招式`;
+  const options = document.getElementById('skill-options');
+  options.innerHTML = '';
+  const moves = charData[currentSkillChar].moves;
+  moves.forEach((move, index) => {
+    const option = document.createElement('div');
+    option.className = 'skill-option' + (currentSkillSelections.includes(index) ? ' active' : '');
+    option.onclick = () => toggleMoveChoice(index);
+    option.innerHTML = `
+      <h3>${move.name}</h3>
+      <p>${move.desc}</p>
+      <p>類型：${move.type}，耗體：${move.cost}</p>
+    `;
+    options.appendChild(option);
+  });
+  updateSkillConfirm();
+}
+
+function toggleMoveChoice(index) {
+  const idx = currentSkillSelections.indexOf(index);
+  if (idx > -1) {
+    currentSkillSelections.splice(idx, 1);
+  } else if (currentSkillSelections.length < 3) {
+    currentSkillSelections.push(index);
+  }
+  renderSkillSelection();
+}
+
+function updateSkillConfirm() {
+  const button = document.getElementById('confirm-skill-btn');
+  button.disabled = currentSkillSelections.length !== 3;
+  button.innerText = currentSkillSelections.length === 3 ? `確認並繼續（已選 ${currentSkillSelections.length}/3）` : '請選擇 3 招式';
+}
+
+function confirmMoveSelection() {
+  if (currentSkillSelections.length !== 3) return;
+  const moves = charData[currentSkillChar].moves;
+  equippedMoves[currentSkillChar] = currentSkillSelections.map(i => moves[i]);
+  skillSelectionQueue.shift();
+  if (skillSelectionQueue.length > 0) {
+    currentSkillChar = skillSelectionQueue[0];
+    currentSkillSelections = [];
+    renderSkillSelection();
+  } else {
+    beginBattle();
+  }
+}
+
+function cancelSkillSelection() {
+  document.getElementById('skill-select-screen').style.display = 'none';
+  document.getElementById('select-screen').style.display = 'flex';
+  renderSelectScreen();
+  updateModeUI();
+}
+
+function setupMatchUI() {
+  let p1Name = p1Team[currentP1Index];
+  let p2Name = p2Team[currentP2Index];
+  document.getElementById('p1-name-display').innerText = `PLAYER: ${p1Name} (${currentP1Index+1}/${p1Team.length})`;
+  document.getElementById('p2-name-display').innerText = `ENEMY: ${p2Name} (${currentP2Index+1}/${p2Team.length})`;
+  document.getElementById('p1-sprite').style.backgroundImage = `url('${charData[p1Name].img}')`;
+  document.getElementById('p2-sprite').style.backgroundImage = `url('${charData[p2Name].img}')`;
+  const playerMoves = getCharacterMoves(p1Name);
+  document.getElementById('txt-skill1').innerText = playerMoves[0].name;
+  document.getElementById('txt-skill2').innerText = playerMoves[1].name;
+  document.getElementById('txt-skill3').innerText = playerMoves[2].name;
+  document.getElementById('txt-ult').innerText = charData[p1Name].ult;
+  p1MaxStm = charData[p1Name].maxStm; p2MaxStm = charData[p2Name].maxStm;
+  p1Stm = p1MaxStm; p2Stm = p2MaxStm;
+  stopDefend('player'); stopDefend('enemy');
+  updateUI();
+}
+
+function handleStaminaLogic() {
+  if (!gameActive) return;
+  if (isPlayerDefending) {
+    p1Stm = Math.max(0, p1Stm - 10);
+    if (p1Stm <= 0) { stopDefend('player'); showFxText("【體力耗盡·防線崩潰！】", "#ff3f34"); playSound('break'); }
+  } else { p1Stm = Math.min(p1MaxStm, p1Stm + 4); }
+  if (isEnemyDefending) {
+    p2Stm = Math.max(0, p2Stm - 10);
+    if (p2Stm <= 0) { stopDefend('enemy'); showFxText("【敵人防線崩潰！】", "#2ecc71"); playSound('break'); }
+  } else { p2Stm = Math.min(p2MaxStm, p2Stm + 4); }
+  updateUI();
+}
+
+function handleKeyDown(e) {
+  if (!gameActive || isActioning) return;
+  let key = e.key.toLowerCase();
+  if (key === 'a' && !keyStatus['a']) {
+    keyStatus['a'] = true; document.getElementById('btn-keyA').classList.add('active-press'); playerAttack('a');
+  } else if (key === 's' && !keyStatus['s']) {
+    keyStatus['s'] = true; document.getElementById('btn-keyS').classList.add('active-press'); playerAttack('s');
+  } else if (key === 'c' && !keyStatus['c']) {
+    keyStatus['c'] = true; document.getElementById('btn-keyC').classList.add('active-press'); playerAttack('c');
+  } else if (key === 'd' && !keyStatus['d']) {
+    keyStatus['d'] = true;
+    let isP1UltEligible = p1Hp < (p1MaxHp * 0.3) && !p1UltUsed;
+    if (isP1UltEligible) { document.getElementById('btn-keyD').classList.add('active-press'); playerAttack('ultimate'); }
+  } else if (e.code === 'Space' && !keyStatus['space']) {
+    e.preventDefault(); keyStatus['space'] = true; document.getElementById('btn-keySpace').classList.add('active-press');
+    if (p1Stm > 15) startDefend('player');
+  }
+}
+
+function handleKeyUp(e) {
+  let key = e.key.toLowerCase();
+  if (key === 'a') { keyStatus['a'] = false; document.getElementById('btn-keyA').classList.remove('active-press'); }
+  if (key === 's') { keyStatus['s'] = false; document.getElementById('btn-keyS').classList.remove('active-press'); }
+  if (key === 'c') { keyStatus['c'] = false; document.getElementById('btn-keyC').classList.remove('active-press'); }
+  if (key === 'd') { keyStatus['d'] = false; document.getElementById('btn-keyD').classList.remove('active-press'); }
+  if (e.code === 'Space') { keyStatus['space'] = false; document.getElementById('btn-keySpace').classList.remove('active-press'); stopDefend('player'); }
+}
+
+function startDefend(target) {
+  if (target === 'player') {
+    isPlayerDefending = true; document.getElementById('player-fighter').classList.add('defending'); document.getElementById('player-state').style.display = 'block';
+  } else {
+    isEnemyDefending = true; document.getElementById('enemy-fighter').classList.add('defending'); document.getElementById('enemy-state').style.display = 'block';
+  }
+}
+
+function stopDefend(target) {
+  if (target === 'player') {
+    isPlayerDefending = false; document.getElementById('player-fighter').classList.remove('defending'); document.getElementById('player-state').style.display = 'none';
+  } else {
+    isEnemyDefending = false; document.getElementById('enemy-fighter').classList.remove('defending'); document.getElementById('enemy-state').style.display = 'none';
+  }
+}
+
+function playerAttack(command) {
+  if (isPlayerDefending) return;
+  let p1Name = p1Team[currentP1Index]; let p2Name = p2Team[currentP2Index];
+  let move = null;
+  if (command === 'ultimate') {
+    if (p1Hp >= p1MaxHp * 0.3 || p1UltUsed) return;
+    p1UltUsed = true;
+    playSound('ult_boom');
+    move = { type: 'ultimate', power: 42, name: charData[p1Name].ult, cost: 0 };
+  } else {
+    move = getPlayerMoveByKey(command);
+    if (!move) { showFxText('❌ 尚未裝備招式！', '#ff3f34'); return; }
+    if (move.type !== 'light' && p1Stm < move.cost) { showFxText('❌ 體力不足！', '#ff3f34'); return; }
+    if (move.type === 'light') { p1Stm = Math.min(p1MaxStm, p1Stm + 15); playSound('hit_light'); }
+    else if (move.type === 'heavy') { p1Stm = Math.max(0, p1Stm - move.cost); playSound('hit_heavy'); }
+    else if (move.type === 'break') { p1Stm = Math.max(0, p1Stm - move.cost); playSound('hit_heavy'); }
+    else if (move.type === 'charge') { p1Stm = Math.max(0, p1Stm - move.cost); playSound('hit_light'); }
+    else if (move.type === 'special') { p1Stm = Math.max(0, p1Stm - move.cost); p1Stm = Math.min(p1MaxStm, p1Stm + 8); playSound('hit_light'); }
+  }
+
+  isActioning = true;
+  let aiReadChance = diffSettings[currentDiff].readRate;
+  if (move.type !== 'ultimate' && Math.random() < aiReadChance && p2Stm > 20) {
+    if (move.type === 'break') { stopDefend('enemy'); } else { startDefend('enemy'); setTimeout(() => stopDefend('enemy'), 400); }
+  }
+
+  let player = document.getElementById('player-fighter'); let enemy = document.getElementById('enemy-fighter'); let gameContainer = document.getElementById('game-screen');
+  player.style.transform = `translateX(${move.type === 'ultimate' ? 260 : 160}px) scale(1.1)`;
+
+  setTimeout(() => {
+    let baseDmg = move.type === 'ultimate' ? move.power : move.power;
+    let finalDamage = Math.floor(baseDmg * charData[p1Name].atk);
+    if (isEnemyDefending && move.type !== 'ultimate') {
+      if (move.type === 'break') {
+        p2Stm = Math.max(0, p2Stm - 70);
+        finalDamage = Math.floor((finalDamage * 3) / charData[p2Name].def);
+        showFxText('⚡【破防成功·大成功！】⚡', '#e74c3c'); playSound('break');
+      } else {
+        finalDamage = Math.floor((finalDamage * 0.1) / charData[p2Name].def);
+        p2Stm = Math.max(0, p2Stm - (move.type === 'heavy' ? 35 : 15));
+        showFxText('【被敵方格擋】', '#3498db'); playSound('guard');
+        if (Math.random() < diffSettings[currentDiff].counterRate) {
+          p1Hp = Math.max(0, p1Hp - 8);
+          showFxText('⚡【敵人完美防禦·盾擊反傷！】', '#ff7675');
+        }
+      }
+    } else {
+      if (move.type === 'break') {
+        finalDamage = Math.floor(4 / charData[p2Name].def);
+        showFxText('【破防技落空·威力極低】', '#7f8c8d');
+      } else {
+        finalDamage = Math.floor(finalDamage / charData[p2Name].def);
+        showFxText(`${move.name} (-${finalDamage})`, charData[p1Name].color);
+        if (move.type === 'ultimate' && p1Name === '傑士塔威') {
+          let selfDmg = Math.floor(p1MaxHp * 0.25);
+          p1Hp = Math.max(1, p1Hp - selfDmg);
+          setTimeout(() => { showFxText(`⚠️ 傑士塔威受到自爆波及 (-${selfDmg})`, '#ffbe76'); }, 400);
+        }
+      }
+      enemy.classList.add('shake-effect'); gameContainer.classList.add('shake-effect');
+    }
+    p2Hp = Math.max(0, p2Hp - finalDamage);
+    updateUI();
+  }, 100);
+  setTimeout(() => { player.style.transform = 'translateX(0px) scale(1)'; enemy.classList.remove('shake-effect'); gameContainer.classList.remove('shake-effect'); isActioning = false; }, 350);
+}
+
+function enemyExecuteAttack(moveOrType = 'light') {
+  if (p2Hp <= 0 || p1Hp <= 0 || isActioning || isEnemyDefending) return;
+  let p1Name = p1Team[currentP1Index]; let p2Name = p2Team[currentP2Index];
+  let enemy = document.getElementById('enemy-fighter'); let gameContainer = document.getElementById('game-screen');
+  let move;
+  if (moveOrType === 'ultimate') {
+    move = { type: 'ultimate', power: 42, name: charData[p2Name].ult, cost: 0 };
+  } else if (typeof moveOrType === 'string') {
+    prepareDefaultMoves(p2Name);
+    const moves = getCharacterMoves(p2Name);
+    move = moves.find(m => m.type === moveOrType) || moves[0];
+  } else {
+    move = moveOrType;
+  }
+
+  if (move.type === 'ultimate') {
+    isActioning = true; p2UltUsed = true; playSound('freeze_alert');
+    fxOverlay.innerText = '🚨 ¡危! AI 奧義發動 🚨'; fxOverlay.style.color = '#ff3f34'; fxOverlay.style.opacity = 1; fxOverlay.classList.add('ult-freeze-text');
+    setTimeout(() => {
+      fxOverlay.classList.remove('ult-freeze-text'); fxOverlay.style.opacity = 0; playSound('ult_boom');
+      enemy.style.transform = `scaleX(-1) translateX(160px) scale(1.1)`;
+      setTimeout(() => {
+        let finalDamage = Math.floor(move.power * charData[p2Name].atk);
+        if (isPlayerDefending) {
+          finalDamage = Math.floor((finalDamage * 0.65) / charData[p1Name].def);
+          showFxText(`🛡️【極限防守！】成功減免大招傷害！ (-${finalDamage})`, '#3498db');
+          playSound('guard');
+        } else {
+          finalDamage = Math.floor(finalDamage / charData[p1Name].def);
+          showFxText(`💥【絕境終結】${move.name} (-${finalDamage})`, charData[p2Name].color);
+        }
+        document.getElementById('player-fighter').classList.add('shake-effect'); gameContainer.classList.add('shake-effect');
+        p1Hp = Math.max(0, p1Hp - finalDamage);
+        if (p2Name === '傑士塔威') {
+          let selfDmg = Math.floor(p2MaxHp * 0.25);
+          p2Hp = Math.max(1, p2Hp - selfDmg);
+        }
+        updateUI();
+      }, 100);
+      setTimeout(() => { enemy.style.transform = 'scaleX(-1) translateX(0px)'; document.getElementById('player-fighter').classList.remove('shake-effect'); gameContainer.classList.remove('shake-effect'); isActioning = false; }, 350);
+    }, 300);
+    return;
+  }
+
+  if (move.type === 'light') {
+    p2Stm = Math.min(p2MaxStm, p2Stm + 15);
+    playSound('hit_light');
+  } else {
+    if (p2Stm < move.cost) {
+      move = getCharacterMoves(p2Name).find(m => m.type === 'light') || move;
+    }
+    if (move.type === 'heavy' || move.type === 'break') {
+      p2Stm = Math.max(0, p2Stm - move.cost);
+      playSound('hit_heavy');
+    } else {
+      p2Stm = Math.max(0, p2Stm - move.cost);
+      playSound('hit_light');
+    }
+  }
+
+  enemy.style.transform = `scaleX(-1) translateX(160px) scale(1.1)`;
+  setTimeout(() => {
+    let finalDamage = Math.floor(move.power * charData[p2Name].atk);
+    if (isPlayerDefending) {
+      if (move.type === 'break') {
+        p1Stm = Math.max(0, p1Stm - 70);
+        finalDamage = Math.floor((finalDamage * 3) / charData[p1Name].def);
+        showFxText('🚨【慘遭敵人破防爆殺！！】🚨', '#ff3f34');
+        playSound('break');
+      } else {
+        finalDamage = Math.floor((finalDamage * 0.1) / charData[p1Name].def);
+        p1Stm = Math.max(0, p1Stm - (move.type === 'heavy' ? 35 : 15));
+        showFxText('格擋成功！', '#3498db');
+        playSound('guard');
+      }
+    } else {
+      if (move.type === 'break') {
+        finalDamage = Math.floor(4 / charData[p1Name].def);
+        showFxText('【敵人破防技揮空】', '#7f8c8d');
+      } else {
+        finalDamage = Math.floor(finalDamage / charData[p1Name].def);
+        showFxText(`💥【敵人出招】${move.name} (-${finalDamage})`, charData[p2Name].color);
+      }
+      document.getElementById('player-fighter').classList.add('shake-effect'); gameContainer.classList.add('shake-effect');
+    }
+    p1Hp = Math.max(0, p1Hp - finalDamage);
+    updateUI();
+  }, 100);
+  setTimeout(() => { enemy.style.transform = 'scaleX(-1) translateX(0px)'; document.getElementById('player-fighter').classList.remove('shake-effect'); gameContainer.classList.remove('shake-effect'); }, 350);
+}
+
+function enemyAI() {
+  if (p2Hp <= 0 || p1Hp <= 0 || isActioning) return;
+  let isEnemyUltEligible = p2Hp < (p2MaxHp * 0.3) && !p2UltUsed;
+  if (isEnemyUltEligible && Math.random() < 0.75) { enemyExecuteAttack('ultimate'); return; }
+  let settings = diffSettings[currentDiff];
+  if (Math.random() < settings.attackChance) {
+    const moves = getCharacterMoves(p2Team[currentP2Index]);
+    let move = moves[0];
+    if (isPlayerDefending && Math.random() < 0.6) {
+      move = moves.find(m => m.type === 'break') || move;
+    } else if (p2Stm >= 35 && Math.random() > 0.4) {
+      move = moves.find(m => m.type === 'heavy') || move;
+    } else {
+      move = moves[Math.floor(Math.random() * moves.length)];
+    }
+    enemyExecuteAttack(move);
+  } else if (Math.random() < 0.25 && p2Stm > 30) {
+    startDefend('enemy'); setTimeout(() => stopDefend('enemy'), 300);
+  }
+}
+
+let storyClearCallback = null;
+function showStoryClearPanel(title, text, buttonText, callback) {
+  document.getElementById('story-clear-title').innerText = title;
+  document.getElementById('story-clear-text').innerText = text;
+  document.querySelector('#story-clear-card button').innerText = buttonText || '繼續';
+  storyClearCallback = callback;
+  document.getElementById('story-clear-panel').style.display = 'flex';
+}
+
+function closeStoryClearPanel() {
+  document.getElementById('story-clear-panel').style.display = 'none';
+  if (typeof storyClearCallback === 'function') {
+    const cb = storyClearCallback;
+    storyClearCallback = null;
+    cb();
+  }
+}
+
+function startShuraNow() {
+  const playerChar = p1Team && p1Team[0] ? p1Team[0] : (selectedCharacters && selectedCharacters[0] ? selectedCharacters[0] : storyUnlocked[0]);
+  if (!playerChar) { alert('找不到玩家角色，請先選角'); return; }
+  // 設定為劇情模式、難度為修羅級，並自動選角與開始
+  currentMode = 'story';
+  selectedCharacters = [playerChar];
+  currentDiff = 'god';
+  const diffEl = document.getElementById('diff-select'); if (diffEl) diffEl.value = 'god';
+  closeStoryClearPanel();
+  document.getElementById('select-screen').style.display = 'none';
+  // startGame 會切換到技能選擇並開始對戰流程
+  setTimeout(() => { startGame(); }, 120);
+}
+
+function showFxText(text, color) {
+  fxOverlay.innerText = text; fxOverlay.style.color = color; fxOverlay.style.opacity = 1;
+  setTimeout(() => { fxOverlay.style.opacity = 0; }, 650);
+}
+
+function endChallenge() {
+  gameActive = false; clearInterval(aiInterval); clearInterval(stmRegenInterval);
+  const playerName = p1Team[0];
+  const finalScore = challengeScore;
+  const enemiesDefeated = challengeEnemyCount - 1;
+  const message = `🏆 挑戰賽結束！\n\n角色: ${playerName}\n擊敗敵人數: ${enemiesDefeated}\n最終分數: ${finalScore}`;
+  alert(message);
+  
+  const playerName_input = prompt('輸入玩家名字以儲存戰績（留空不儲存）:');
+  if (playerName_input && playerName_input.trim() !== '') {
+    const record = { playerName: playerName_input.trim(), character: playerName, score: finalScore, enemies: enemiesDefeated, difficulty: currentDiff, date: new Date().toLocaleString('zh-TW') };
+    challengeRecords.push(record);
+    challengeRecords.sort((a, b) => b.score - a.score);
+    localStorage.setItem('challengeRecords', JSON.stringify(challengeRecords));
+    alert(`✅ 戰績已儲存！\n玩家: ${playerName_input}\n分數: ${finalScore}\n\n排名：#${challengeRecords.findIndex(r => r === record) + 1}`);
+  } else {
+    alert('⚠️ 戰績未儲存');
+  }
+  location.reload();
+}
+
+function loadChallengeRecords() {
+  const saved = localStorage.getItem('challengeRecords');
+  if (saved) challengeRecords = JSON.parse(saved);
+}
+
+function showChallengeRecords() {
+  if (challengeRecords.length === 0) { alert('暫無戰績'); return; }
+  let msg = '🏆 挑戰賽排行榜 🏆\n\n';
+  challengeRecords.slice(0, 10).forEach((r, i) => {
+    msg += `${i+1}. ${r.playerName} - ${r.character} (${r.score}分, 擊敗${r.enemies}人) [${r.difficulty}]\n`;
+  });
+  alert(msg);
+}
+
+function updateUI() {
+  let p1Name = p1Team[currentP1Index] || '坂田銀時'; let p2Name = p2Team[currentP2Index] || '土方十四郎';
+  let p1Danger = p1Hp < (p1MaxHp * 0.3); let p2Danger = p2Hp < (p2MaxHp * 0.3);
+  let hp1Bar = document.getElementById('p1-hp'); let hp2Bar = document.getElementById('p2-hp');
+  const playerMoves = getCharacterMoves(p1Name);
+  document.getElementById('txt-skill1').innerText = playerMoves[0].name;
+  document.getElementById('txt-skill2').innerText = playerMoves[1].name;
+  document.getElementById('txt-skill3').innerText = playerMoves[2].name;
+  document.getElementById('txt-ult').innerText = charData[p1Name].ult;
+  if (p1Danger) {
+    hp1Bar.classList.add('danger');
+    if (!p1UltUsed) { document.getElementById('p1-ult-badge').style.display = 'block'; document.getElementById('btn-keyD').classList.add('ready'); }
+    else { document.getElementById('p1-ult-badge').style.display = 'none'; document.getElementById('btn-keyD').classList.remove('ready'); }
+  } else { hp1Bar.classList.remove('danger'); document.getElementById('p1-ult-badge').style.display = 'none'; document.getElementById('btn-keyD').classList.remove('ready'); }
+  if (p2Danger) { hp2Bar.classList.add('danger'); if (!p2UltUsed) document.getElementById('p2-ult-badge').style.display = 'block'; else document.getElementById('p2-ult-badge').style.display = 'none'; }
+  else { hp2Bar.classList.remove('danger'); document.getElementById('p2-ult-badge').style.display = 'none'; }
+  hp1Bar.style.width = (p1Hp / p1MaxHp) * 100 + '%'; hp2Bar.style.width = (p2Hp / p2MaxHp) * 100 + '%';
+  document.getElementById('p1-stamina').style.width = (p1Stm / p1MaxStm) * 100 + '%'; document.getElementById('p2-stamina').style.width = (p2Stm / p2MaxStm) * 100 + '%';
+  document.getElementById('p1-hp-text').innerText = `HP: ${p1Hp} / ${p1MaxHp}`; document.getElementById('p2-hp-text').innerText = `HP: ${p2Hp} / ${p2MaxHp}`;
+  if (p2Hp <= 0) {
+    if (currentMode === 'challenge') {
+      gameActive = false; clearInterval(aiInterval); clearInterval(stmRegenInterval);
+      const pointsEarned = Math.floor(100 + (currentDiff === 'god' ? 300 : currentDiff === 'kami' ? 250 : currentDiff === 'hard' ? 150 : currentDiff === 'veteran' ? 100 : currentDiff === 'normal' ? 50 : 20)) + Math.floor(p1Hp / p1MaxHp * 50);
+      challengeScore += pointsEarned;
+      playSound('heal');
+      const msg = `✅ K.O.！${p2Team[0]} 被擊敗！\n本場得分: ${pointsEarned}\n累計分數: ${challengeScore}`;
+      alert(msg);
+      setTimeout(() => {
+        p1Hp = p1MaxHp; p1Stm = p1MaxStm; p1UltUsed = false; p2UltUsed = false;
+        const playerChar = p1Team[0];
+        const availableEnemies = Object.keys(charData).filter(c => c !== playerChar);
+        const nextEnemy = availableEnemies[Math.floor(Math.random() * availableEnemies.length)];
+        p2Team = [nextEnemy];
+        p2MaxHp = charData[nextEnemy].maxHp; p2Hp = p2MaxHp;
+        challengeEnemyCount++;
+        setupMatchUI();
+        gameActive = true;
+        aiInterval = setInterval(enemyAI, diffSettings[currentDiff].aiSpeed);
+        stmRegenInterval = setInterval(handleStaminaLogic, 300);
+      }, 500);
+    } else if (currentMode === 'story') {
+      gameActive = false; clearInterval(aiInterval); clearInterval(stmRegenInterval);
+      const nextUnlock = storySequence[storyUnlocked.length];
+      storyStage++;
+      if (nextUnlock) {
+        if (currentDiff === 'god') {
+          const playerChar = p1Team[0];
+          grantStoryXP(playerChar, 20);
+          playSound('heal');
+          alert(`🎖 修羅級勝利！${playerChar} 獲得 20 經驗值。`);
+        } else if (currentDiff === 'kami') {
+          const playerChar = p1Team[0];
+          grantStoryXP(playerChar, 50);
+          playSound('heal');
+          alert(`✨ 神明級勝利！${playerChar} 獲得 50 經驗值。`);
+        }
+        storyUnlocked.push(nextUnlock);
+        saveStoryProgress();
+        // 資深挑戰級不在每關顯示過關面板：只解鎖角色並回到選角
+        alert(`勝利！已解鎖角色：${nextUnlock}。請回到選角畫面，為下一場劇情戰準備招式。`);
+        document.getElementById('game-screen').style.display = 'none';
+        document.getElementById('select-screen').style.display = 'flex';
+        renderSelectScreen(); updateModeUI();
+      } else {
+        // 已通關整條劇情線
+        if (currentDiff === 'veteran' && !storyShuraUnlocked) {
+          storyUpgradeUnlocked = true;
+          storyShuraUnlocked = true;
+          saveStoryProgress();
+          showStoryClearPanel(
+            '資深挑戰級通關！',
+            '你已完成整條資深挑戰級劇情線！已解鎖 修羅級劇情模式 與 角色升級系統。',
+            '返回選角',
+            () => {
+              document.getElementById('game-screen').style.display = 'none';
+              document.getElementById('select-screen').style.display = 'flex';
+              // 將劇情難度自動切換為 修羅級（god）
+              currentDiff = 'god';
+              const diffEl = document.getElementById('diff-select');
+              if (diffEl) diffEl.value = 'god';
+              renderSelectScreen(); updateModeUI();
+            }
+          );
+          // 自動開始修羅級（短延遲以顯示過關面板）
+          setTimeout(() => {
+            try { startShuraNow(); } catch(e) { console.warn('無法自動啟動修羅級', e); }
+          }, 2200);
+        } else if (currentDiff === 'god' && !storyKamiUnlocked) {
+          storyKamiUnlocked = true;
+          saveStoryProgress();
+          showStoryClearPanel(
+            '修羅級通關！',
+            '你已完成整條修羅級劇情線！已解鎖 神明級劇情模式。',
+            '返回選角',
+            () => {
+              document.getElementById('game-screen').style.display = 'none';
+              document.getElementById('select-screen').style.display = 'flex';
+              renderSelectScreen(); updateModeUI();
+            }
+          );
+        } else {
+          alert('🎉 劇情模式已通關！銀魂世界的冒險完美落幕！'); saveStoryProgress(); location.reload();
+        }
+      }
+    } else {
+      currentP2Index++;
+      if (currentP2Index < 3) {
+        let nextP2Name = p2Team[currentP2Index]; let bonusRate = diffSettings[currentDiff].healBonus; let healAmount = Math.floor(p1MaxHp * bonusRate);
+        p1Hp = Math.min(p1MaxHp, p1Hp + healAmount); p1UltUsed = false; p2UltUsed = false; playSound('heal');
+        alert(`K.O.! 【修羅戰報】\n你的選手存活！因當前難度限制，僅獲得 ${bonusRate*100}% (${healAmount}HP) 的療癒補給。\n下一位強敵即將登場：${nextP2Name}`);
+        p2MaxHp = charData[nextP2Name].maxHp; p2Hp = p2MaxHp; setupMatchUI();
+      } else {
+        gameActive = false; clearInterval(aiInterval); clearInterval(stmRegenInterval);
+        alert("🏆 【眾神之巔勝利】太瘋狂了！你竟然在極端嚴苛的殘血懲繼與大招暗轉核彈威脅下，戰勝了高階 AI 戰隊！"); location.reload();
+      }
+    }
+  } else if (p1Hp <= 0) {
+    if (currentMode === 'challenge') {
+      endChallenge();
+    } else if (currentMode === 'story') {
+      gameActive = false; clearInterval(aiInterval); clearInterval(stmRegenInterval);
+      alert('❌ 劇情模式失敗，銀時請重新出發！'); location.reload();
+    } else {
+      currentP1Index++;
+      if (currentP1Index < 3) {
+        let nextP1Name = p1Team[currentP1Index]; let bonusRate = diffSettings[currentDiff].healBonus;
+        p2Hp = Math.min(p2MaxHp, p2Hp + Math.floor(p2MaxHp * bonusRate)); p1UltUsed = false; p2UltUsed = false;
+        alert(`你倒下了！\n對手繼承殘血。你的下一位後援選手：${nextP1Name} 準備上陣！`);
+        p1MaxHp = charData[nextP1Name].maxHp; p1Hp = p1MaxHp; setupMatchUI();
+      } else {
+        gameActive = false; clearInterval(aiInterval); clearInterval(stmRegenInterval);
+        alert("❌ 【隊伍全滅】高階 AI 的暗轉核彈太致命了...回去重新修煉反應速度吧！"); location.reload();
+      }
+    }
+  }
+}
+
+loadChallengeRecords();
+loadStoryProgress();
+renderSelectScreen();
+</script>
+</body>
+</html>
