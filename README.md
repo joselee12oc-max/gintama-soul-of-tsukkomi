@@ -24,7 +24,7 @@
 
 ## GitHub 上傳
 
-本專案已設定遠端倉庫：`https://github.com/joselee12oc-max/game.git`
+本專案已設定遠端倉庫：`https://github.com/joselee12oc-max/gintama-soul-of-tsukkomi.git`
 
 若本機環境已安裝 Git，請執行：
 
@@ -34,4 +34,12 @@ git commit -m "整理圖片資料夾並新增 README"
 git push origin main
 ```
 
-如果需要，我也可以協助你產生更完整的專案說明或 GitHub Pages 發布設定。
+## GitHub Pages
+
+專案已新增 GitHub Pages 部署工作流程：`.github/workflows/pages.yml`
+
+若這份配置成功執行，網站將自動部署到：
+
+`https://joselee12oc-max.github.io/gintama-soul-of-tsukkomi/`
+
+如果你希望，我也可以幫你檢查 Actions 是否通過，或協助你進一步設定自訂網域。
