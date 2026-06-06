@@ -744,24 +744,24 @@ function playSound(type) {
 
 // 🌟 18 人終極角色庫 (追加定春、傑士塔威)
 const charData = {
-  '坂田銀時': { maxHp: 100, maxStm: 100, atk: 1.00, def: 1.00, img:'坂田銀時.jpg', s1: '洞爺湖連擊', s2: '小綿羊衝撞', ult: '【糖分暴走·白夜叉殘影斬】', color: '#a0d8ef' },
-  '志村新八': { maxHp: 90,  maxStm: 120, atk: 1.15, def: 0.85, img:'志村新八.jpg', s1: '天堂無心流', s2: '眼鏡飛擊', ult: '【存在感逆襲·眼鏡星爆】', color: '#96514d' },
-  '神樂':     { maxHp: 120, maxStm: 90,  atk: 0.90, def: 1.10, img:'神樂.jpg', s1: '夜兔怪力拳', s2: '夜兔傘彈發射', ult: '【夜兔血脈·極限臨界暴走】', color: '#e94747' },
-  '土方十四郎':{ maxHp: 105, maxStm: 100, atk: 1.05, def: 0.95, img:'土方十四郎.jpg', s1: '真選組拔刀術', s2: '美乃滋火箭炮', ult: '【局中法度·美乃滋地獄火】', color: '#2c3e50' },
-  '沖田總悟': { maxHp: 85,  maxStm: 110, atk: 1.25, def: 0.75, img:'沖田總悟.jpg', s1: '抖S巨劍揮砍', s2: '加農炮轟炸', ult: '【一番隊·抖S火箭炮狂轟】', color: '#e6b800' },
-  '近藤勳':   { maxHp: 115, maxStm: 80,  atk: 0.85, def: 1.20, img:'近藤勳.jpg', s1: '猩猩重擊', s2: '真心追隨衝撞', ult: '【局長特權·光屁股真愛追擊】', color: '#8b5a2b' },
-  '神威':     { maxHp: 95,  maxStm: 105, atk: 1.35, def: 0.70, img:'神威.jpg', s1: '第七師團連打', s2: '夜兔迅殺踢', ult: '【春雨雷霆·夜兔弒師神速連擊】', color: '#ff7675' },
-  '星海坊主': { maxHp: 125, maxStm: 85,  atk: 1.10, def: 1.15, img:'星海坊主.jpg', s1: '星際掃蕩拳', s2: '巨傘橫掃', ult: '【宇宙最強獵人·究極禿頭大砲】', color: '#ffeaa7' },
-  '桂小太郎': { maxHp: 100, maxStm: 115, atk: 1.00, def: 1.05, img:'桂小太郎.jpg', s1: '攘夷快劍', s2: '炸彈投擲', ult: '【不是假髮是炸彈·狂亂貴公子狂轟】', color: '#9b59b6' },
-  '高杉晉助': { maxHp: 95,  maxStm: 100, atk: 1.25, def: 0.80, img:'高杉晉助.jpg', s1: '鬼兵隊邪劍術', s2: '煙管突刺', ult: '【摧毀這個世界·黑色野獸之噬】', color: '#6c5ce7' },
-  '坂本辰馬': { maxHp: 105, maxStm: 120, atk: 0.95, def: 0.95, img:'坂本辰馬.jpg', s1: '快援流手槍擊', s2: '商人的談判術', ult: '【啊哈哈哈哈·快援隊宇宙艦隊突擊】', color: '#fdcb6e' },
-  '月詠':     { maxHp: 100, maxStm: 105, atk: 1.05, def: 1.00, img:'月詠.jpg', s1: '百華苦無連投', s2: '死神抗拒踢', ult: '【吉原守護者·百華苦無暴風雨】', color: '#fd79a8' },
-  '柳生九兵衛':{ maxHp: 90,  maxStm: 110, atk: 1.20, def: 0.80, img:'柳生九兵衛.jpg', s1: '柳生新陰流·疾風', s2: '敏捷反轉摔', ult: '【名門繼承者·柳生新陰流絕技】', color: '#00cec9' },
-  '伊莉莎白': { maxHp: 135, maxStm: 75,  atk: 0.85, def: 1.25, img:'伊莉莎白.jpg', s1: '牌子猛擊', s2: '神秘腿毛連踢', ult: '【桂先生由我守護·木牌狂暴轟炸】', color: '#dfe6e9' },
-  '猿飛菖蒲': { maxHp: 95,  maxStm: 115, atk: 1.15, def: 0.80, img:'猿飛菖蒲.jpg', s1: '飛鏢追蹤襲', s2: '癡女大跨步', ult: '【銀時命定之鎖·納豆束縛連擊】', color: '#e84393' },
-  '服部全藏': { maxHp: 105, maxStm: 100, atk: 1.05, def: 1.00, img:'服部全藏.jpg', s1: '御庭番御用刀', s2: '苦無陷阱置', ult: '【精英忍者摩利支天·忍法密技爆殺】', color: '#d63031' },
-  '定春':     { maxHp: 140, maxStm: 75,  atk: 0.95, def: 1.20, img:'定春.jpg', s1: '巨爪重拍', s2: '神速飛撲', ult: '【巨齒神速·爆咬銀時頭顱】', color: '#ffffff' },
-  '傑士塔威': { maxHp: 70,  maxStm: 130, atk: 1.40, def: 0.60, img:'傑士塔威.jpg', s1: '滾動撞擊', s2: '火花濺射', ult: '【工廠生產線·全彈無規律大自爆】', color: '#ffbe76' }
+  '坂田銀時': { maxHp: 100, maxStm: 100, atk: 1.00, def: 1.00, img:'images/坂田銀時.jpg', s1: '洞爺湖連擊', s2: '小綿羊衝撞', ult: '【糖分暴走·白夜叉殘影斬】', color: '#a0d8ef' },
+  '志村新八': { maxHp: 90,  maxStm: 120, atk: 1.15, def: 0.85, img:'images/志村新八.jpg', s1: '天堂無心流', s2: '眼鏡飛擊', ult: '【存在感逆襲·眼鏡星爆】', color: '#96514d' },
+  '神樂':     { maxHp: 120, maxStm: 90,  atk: 0.90, def: 1.10, img:'images/神樂.jpg', s1: '夜兔怪力拳', s2: '夜兔傘彈發射', ult: '【夜兔血脈·極限臨界暴走】', color: '#e94747' },
+  '土方十四郎':{ maxHp: 105, maxStm: 100, atk: 1.05, def: 0.95, img:'images/土方十四郎.jpg', s1: '真選組拔刀術', s2: '美乃滋火箭炮', ult: '【局中法度·美乃滋地獄火】', color: '#2c3e50' },
+  '沖田總悟': { maxHp: 85,  maxStm: 110, atk: 1.25, def: 0.75, img:'images/沖田總悟.jpg', s1: '抖S巨劍揮砍', s2: '加農炮轟炸', ult: '【一番隊·抖S火箭炮狂轟】', color: '#e6b800' },
+  '近藤勳':   { maxHp: 115, maxStm: 80,  atk: 0.85, def: 1.20, img:'images/近藤勳.jpg', s1: '猩猩重擊', s2: '真心追隨衝撞', ult: '【局長特權·光屁股真愛追擊】', color: '#8b5a2b' },
+  '神威':     { maxHp: 95,  maxStm: 105, atk: 1.35, def: 0.70, img:'images/神威.jpg', s1: '第七師團連打', s2: '夜兔迅殺踢', ult: '【春雨雷霆·夜兔弒師神速連擊】', color: '#ff7675' },
+  '星海坊主': { maxHp: 125, maxStm: 85,  atk: 1.10, def: 1.15, img:'images/星海坊主.jpg', s1: '星際掃蕩拳', s2: '巨傘橫掃', ult: '【宇宙最強獵人·究極禿頭大砲】', color: '#ffeaa7' },
+  '桂小太郎': { maxHp: 100, maxStm: 115, atk: 1.00, def: 1.05, img:'images/桂小太郎.jpg', s1: '攘夷快劍', s2: '炸彈投擲', ult: '【不是假髮是炸彈·狂亂貴公子狂轟】', color: '#9b59b6' },
+  '高杉晉助': { maxHp: 95,  maxStm: 100, atk: 1.25, def: 0.80, img:'images/高杉晉助.jpg', s1: '鬼兵隊邪劍術', s2: '煙管突刺', ult: '【摧毀這個世界·黑色野獸之噬】', color: '#6c5ce7' },
+  '坂本辰馬': { maxHp: 105, maxStm: 120, atk: 0.95, def: 0.95, img:'images/坂本辰馬.jpg', s1: '快援流手槍擊', s2: '商人的談判術', ult: '【啊哈哈哈哈·快援隊宇宙艦隊突擊】', color: '#fdcb6e' },
+  '月詠':     { maxHp: 100, maxStm: 105, atk: 1.05, def: 1.00, img:'images/月詠.jpg', s1: '百華苦無連投', s2: '死神抗拒踢', ult: '【吉原守護者·百華苦無暴風雨】', color: '#fd79a8' },
+  '柳生九兵衛':{ maxHp: 90,  maxStm: 110, atk: 1.20, def: 0.80, img:'images/柳生九兵衛.jpg', s1: '柳生新陰流·疾風', s2: '敏捷反轉摔', ult: '【名門繼承者·柳生新陰流絕技】', color: '#00cec9' },
+  '伊莉莎白': { maxHp: 135, maxStm: 75,  atk: 0.85, def: 1.25, img:'images/伊莉莎白.jpg', s1: '牌子猛擊', s2: '神秘腿毛連踢', ult: '【桂先生由我守護·木牌狂暴轟炸】', color: '#dfe6e9' },
+  '猿飛菖蒲': { maxHp: 95,  maxStm: 115, atk: 1.15, def: 0.80, img:'images/猿飛菖蒲.jpg', s1: '飛鏢追蹤襲', s2: '癡女大跨步', ult: '【銀時命定之鎖·納豆束縛連擊】', color: '#e84393' },
+  '服部全藏': { maxHp: 105, maxStm: 100, atk: 1.05, def: 1.00, img:'images/服部全藏.jpg', s1: '御庭番御用刀', s2: '苦無陷阱置', ult: '【精英忍者摩利支天·忍法密技爆殺】', color: '#d63031' },
+  '定春':     { maxHp: 140, maxStm: 75,  atk: 0.95, def: 1.20, img:'images/定春.jpg', s1: '巨爪重拍', s2: '神速飛撲', ult: '【巨齒神速·爆咬銀時頭顱】', color: '#ffffff' },
+  '傑士塔威': { maxHp: 70,  maxStm: 130, atk: 1.40, def: 0.60, img:'images/傑士塔威.jpg', s1: '滾動撞擊', s2: '火花濺射', ult: '【工廠生產線·全彈無規律大自爆】', color: '#ffbe76' }
 };
 
 const diffSettings = {
